@@ -3,6 +3,14 @@ old/
 unused/
 
 
+# Data files specific to Starships
+Exofiles/
+HRS_correlations/
+HRS_models/
+HRS_reductions/
+HRS_data/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -132,3 +140,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
