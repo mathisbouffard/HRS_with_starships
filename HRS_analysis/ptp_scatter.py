@@ -4,6 +4,9 @@
 # ATTENTION: this code outputs a p-t-p scatter that is too high when the density of points is very low
 # This should not be a problem for JWST or high resolution observations
 
+# ATTENTION: do not use this code with s1d data, as the wavelengths are interpolated, which messes up the uncertainty calculations
+# Use per-order s2d data instead
+
 # This program has been tested and works for:
     # different input functions as y
     # different levels of noise added to y
