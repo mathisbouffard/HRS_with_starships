@@ -1,0 +1,676 @@
+# -----------------------------------------------------------
+# --- Global parameters ---
+# -----------------------------------------------------------
+
+# PLANET NAME
+# This is used to fetch information in ExoFile, and to save the results
+pl_name: TRAPPIST-1 b
+
+# NAME OF THE INSTRUMENT (used to get the resolution and wavelength range)
+# This should be a list, matching the number of high resolution files
+# If a single element is given, it will be used for all observation files.
+instrum: 
+  - nirps_he
+
+# PATH TO THE REDUCED DATA
+high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS/TRAPPIST-1b/2024-07-05/v001/'
+
+# DATA FILES
+high_res_file_stem_list:
+  - 'retrieval_input_1-pc_mask_wings97'
+
+
+
+# -----------------------------------------------------------
+# --- Star and planet parameters ---
+# -----------------------------------------------------------
+
+# DICTIONARY OF PLANET PARAMETERS (that will replace the ones in ExoFile)
+# units must be inputed in astropy string format
+# set to null or comment if you want to use the default values from ExoFile
+pl_params:
+
+  ###### STAR ######
+  
+  M_star: # Star mass
+    value: 0.0898
+    unit: M_sun
+
+  R_star: # Star radius
+    value: 0.1192
+    unit: R_sun
+
+  Teff: # Star effective temperature
+    value: 2520
+    unit: K
+
+  ###### PLANET ######
+  
+  M_pl: # Planet mass
+    value: 1.374
+    unit: M_earth
+  
+  R_pl: # Planet radius
+    value: 1.116
+    unit: R_earth
+
+  Tp: # Planet equilibrium temperature
+    value: 397.6
+    unit: K
+
+  ap: # Semi-major axis
+    value: 0.01154
+    unit: au
+
+  period: # Orbital period
+    value: 130540.405248
+    unit: s
+
+  excent: # Eccentricity
+    value: 0.0
+    unit: null
+
+  w: # Longitude of periastron?
+    value: 4.712389
+    unit: rad
+    
+  incl: # Inclination
+    value: 1.55822996
+    unit: rad
+ 
+  RV_sys: # Systemic radial velocity
+    value: -52.003101
+    unit: km/s
+
+  trandur: # Transit duration
+    value: 2178.54
+    unit: s
+  
+  mid_tr: # Mid-transit time
+    value: 2460496.8725766301
+    unit: d
+  
+  t_peri: # Time of periastron passage
+    value: 2460496.8725766301
+    unit: d
+
+# STELLAR SPECTRUM FILE
+# (Set to null if not used)
+# It will be loaded using np.load, so it should be a .npz file, with the following
+# keys: 'wave', 'flux' and optionnally, 'sampling_res'.
+#   'wave': wavelength grid is in microns.
+#   'flux': stellar flux in erg / cm**2 / s / cm.
+#   'sampling_res': sampling resolution of the spectrum (ex: 500000).
+star_spectrum: null
+
+
+
+# -----------------------------------------------------------
+# --- Model atmosphere parameters ---
+# -----------------------------------------------------------
+
+# SPECIES THAT CONTRIBUTE TO THE LINE OPACITIES
+# Double check the opacities are available in petitRADTRANS
+line_opacities: [H2O, CO2, CH4]
+
+# SPECIES THAT CONTRIBUTE TO THE CONTINUUM OPACITIES
+# By default, H2-H2 and H2-He CIA are included.
+continuum_opacities: [N2-N2]
+
+# OTHER SPECIES TO ADD TO THE MODEL
+# (ex: e- and H needed for H- opacity):
+other_species: []
+
+# TP PROFILE (guillot, modif, iso, akima)
+kind_temp: 'iso'
+
+# MODEL TYPE (emission, transmission)
+kind_trans: 'transmission'
+
+# CHEMICAL EQUILIBRIUM
+# Note that C/O and Fe/H need to be included in the parameters if chemical equilibrium is True
+# If you include C/O or Fe/H either in fixed_params or params_prior, chemical equilibrium will be used.
+chemical_equilibrium: False
+
+# DISSOCIATION PARAMETRIZATION IN ABUNDANCE PROFILES
+# (not used in chemical equilibrium)
+dissociation: False
+
+# PRESSURE GRID
+limP: [-7, 2]    # pressure range, log10 (bar)
+n_pts: 50        # pressure n_points
+
+
+
+# -----------------------------------------------------------
+# --- Priors ---
+# -----------------------------------------------------------
+
+# Note: All the parameters used for modeling will be put in a dictionnary
+# named theta_dict, which is a combination of the keys in fixed_params and params_prior.
+# The parameters in params_prior will overwrite the fixed_params if they have the same key.
+
+# DEFAULT PARAMS NEEDED FOR THE RETRIEVAL
+fixed_params:
+
+  # Gravity in m/s^2
+  # If null, it will be computed from the planet's mass and radius
+  gravity: null
+
+  # Reference pressure in bar (for transmission spectra)
+  P0: 1.0
+
+  ###### ABUNDANCES ######
+  
+  e-: 1.0e-99  # electrons
+  H: 1.0e-99
+
+  H2: 1.0e-99
+  He: 1.0e-99
+
+  N2-N2: -0.107905397  # equivalent to 78%
+
+  # Cloud parameters (set to null if not used)
+  cloud_fraction: 0.0
+  p_cloud: null  # cloud pressure (in bar)
+  scat_factor: null  # scattering factor
+
+  # Abundance ratios for chemical equilibrium
+  C/O: null  # solar value is 0.54
+  Fe/H: null  # solar value is 0.0
+
+  ###### TP PROFILE PARAMS ######
+  
+  # Equilibrium temperature (for all TP profiles)
+  T_eq: 397.6
+
+  # # Guillot and Guillot_modif parameters
+  # # gamma parameter (for Guillot and Guillot_modif)
+  # tp_gamma: 10.0
+  # # Internal temperature (for Guillot and Guillot_modif)
+  # T_int: 500.0
+  
+  # # Guillot only parameters
+  # # IR opacity (for Guillot)
+  # kappa_IR: 0.01
+
+  # # Guillot_modif only parameters
+  # # Delta parameter (for Guillot_modif)
+  # tp_delta: 1.0e-07
+  # # Transition pressure (for Guillot_modif)
+  # ptrans: 1.0e-03
+  # # Alpha parameter (for Guillot_modif)
+  # tp_alpha: 0.3
+
+  # # Akima Spline TP profile parameters
+  # # These lists will appear as P1, P2, ..., Pn and T1, T2, ..., Tn in the theta_dict.
+  # # List of pressure nodes
+  # akima_P: [1.0e-10, 1.0e-05, 1.0e-02, 1.0e+01]
+  # # List of temperature nodes
+  # akima_T: [1000.0, 1500.0, 2000.0, 2500.0]
+
+  ###### ORBITAL PARAMS ######
+  
+  # Semi amplitude of the planet's radial velocity (in km/s)
+  kp: 83.0803757155627
+  # Radial velocity of the system (in km/s)
+  rv: 0.0
+
+  ###### ROTATION KERNEL PARAMS ######
+  
+  # # Wind speed (in km/s)  (Old parameter, not used anymore)
+  # wind: null  # Set to null if not used
+  # # Phase of the first longitude in Citrus kernel
+  # phase1: 0.5
+  # # Phase of the second longitude in Citrus kernel
+  # phase2: 0.75
+  # # Rotation factor in Citrus kernel
+  # rot_factor: 1.0
+
+  ###### EMISSION-ONLY PARAMS ######
+  
+  # Scaling factor for the Fp/Fs spectrum
+  spec_scale: 1.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# list of exposures to mask when computing the logL (intended for masking berv crossings)
+# indices must be given for concatenated observations
+# e.g. if 2 transits, of 20 exposures each, and want to mask exposures 4, 5, 6 from tr1 and 8, 9 from tr2 (if we index exposures starting from 1),
+# give mask_exposures: [4, 5, 6, 27, 28]
+# mask_exposures: [13, 14, 15, 16, 25, 26, 27, 47, 48, 96, 97, 98]
+
+# --- Low-resolution data ---
+  
+# Dictionary of path to spectrophotometric data (ex: JWST, HST)
+# If empty, no spectrophotometric data will be used
+spectrophotometric_data:
+  # wfc3:
+  #   file_path: '/home/fgenest/projects/def-dlafre/fgenest/hst/WASP-80b'
+  #   file_name: 'WASP-80b_Wong2022_transspec.ecsv'
+  # jwst:
+  #   file_path: '/home/fgenest/projects/def-dlafre/fgenest/jwst/WASP-80b'
+  #   file_name: 'WASP-80b_Bell2023_transspec.ecsv'
+
+# Dictionary of path to photometric data (ex: Spitzer)
+# If empty, no photometric data will be used
+photometric_data:
+  # spitzer:
+  #   file_path: '~/projects/def-dlafre/adb/Observations/Spitzer'
+  #   file_name: 'WASP-33_Spitzer.ecsv'
+
+
+# --- Some nobs to play with ---
+
+# Type of retrieval : JR, HRR or LRR  (this should be removed eventually)
+retrieval_type: 'HRR'
+
+# In HRR mode only, use white light curve from spectrophotometric and photometric bandpass?
+# This includes the mean of all data in the fit for each low-resolution instruments.
+white_light: False
+
+
+# --- Walker chains ---
+
+# Name of the run (will be used to save the results)
+# For example, the walkers will be saved in base_dir/DataAnalysis/walker_steps/<pl_name>/walker_steps_<run_name>.h5
+# If null, the run_name will be define by joining with "_" all the following parameters
+# - kind_trans
+# - retrieval_type
+# - "WL" (if white_light is True)
+# - keys in spectrophotometric_data dictionary (ex: wfc3)
+# - keys in photometric_data dictionary (ex: spitzer)
+# - kind_temp
+# - "disso" (if dissociation is True)
+# - "chemEq" (if chemical equilibrium is True)
+# - the sbatch job ID if available
+run_name: 'greenhouse-gases_test'
+
+# Name of the file where the walker steps will be saved
+# If null, the file will be named walker_steps_<run_name>.h5
+walker_file_out: null
+
+# Walker file used to init walkers
+# If null, the retrieval will use random initialisation from the prior
+walker_file_in: null
+# walker_file_in: 'walker_steps_greenhouse-gases_v2_combined.h5'
+
+# How to init walkers
+# Options: "from_burnin", "continue" (not used if walker_file_in is null)
+# If "from_burnin", the walkers will be initialised from the last step of the burnin chain in walker_file_in
+# If "continue", the walkers will be initialised from the last step of the chain in walker_file_in.
+#    Note that this option allows to keep the walker_file_in as the output file, and append the new walkers to it.
+init_mode: 'from_burnin'
+
+# - Number of cpu to use
+# If null, the code will use the number of cpus from
+# the slurm environment variable named SLURM_CPUS_PER_TASK
+# (null is recommended if using sbatch)
+n_cpu: null
+
+# - Number of walkers
+# If null, the number of walkers will be set to n_wlkr_per_cpu * n_cpu
+# (we recommend to set it to null and using n_wlkr_per_cpu instead)
+n_walkers: null
+
+# - Number of walkers per cpu
+n_walkers_per_cpu: 8
+
+
+# --- Input for model intialisation ---
+
+
+# Which species lists will be included in the fit?
+# This will automatically add the species in the params_prior dictionnary,
+# with a log_uniform prior between 1e-12 and 1e-0.5.
+# You can leave the list empty if you want to set the priors manually.
+# For chemical equilibrium, all the species will be added to the fixed_params dictionnary.
+# The possible elements of the list are:
+# - one of the species list (like line_opacities, continuum_opacities, other_species)
+# - or species name. This is useful if you want to fit only some of the species in a list.
+species_in_prior: []
+
+# Remove species at high or low res
+# Leave empty unless you want to remove a species at either resolution
+remove_mol_high: []
+remove_mol_low: []
+
+
+
+# -----------------------------------------------------------
+# --- Other parameters ---
+# -----------------------------------------------------------
+
+
+# Path to the main directory where outputs are saved
+# If None, use scratch (if available) or home otherwise
+base_dir: None
+
+
+
+
+# SLURM_ARRAY_TASK_ID behaviour
+# Tells how to use the SLURM_ARRAY_TASK_ID environment variable if detected.
+# Options:
+# null: the code will not use it.
+# 'burnin': the code will assume that multiple burnin chains are running in parallel.
+#           and will use the SLURM_ARRAY_TASK_ID to identify the different outputs (walker_file_out)
+#           Note that params_file_out will only be outputed for the first task (with ID = 1).
+slurm_array_behaviour: 'burnin'
+
+# How many steps for burnin phase
+n_steps_burnin: 30
+
+# How many steps for sampling phase
+n_steps_sampling: 200
+
+# Path where the walker steps will be saved
+# If null, the path will be set to <base_dir>/DataAnalysis/walker_steps/<pl_name>
+walker_path: '/home/mathisb/scratch/HRS_retrievals/walker_steps/TRAPPIST-1b/'
+
+
+# Path where this yaml file will be copied
+# If null, the path will be set to base_dir/DataAnalysis/retrieval_params/<pl_name>
+params_path: '/home/mathisb/scratch/HRS_retrievals/retrieval_params/TRAPPIST-1b/'
+
+# Name of the file where this yaml file will be copied
+# If null, the file will be named params_<run_name>.yaml
+params_file_out: null
+
+# Downsampling factor for the high resolution model
+# It will be used to downsample the high resolution model
+# to increase the speed of the retrieval.
+# Ex: 1 will use the full resolution of 1 000 000
+#     4 will use a resolution of 1e6/4 = 250 000
+opacity_sampling: 4
+
+# List of orders to use (null will use all orders)
+orders: null
+
+
+
+
+
+# -----------------------------------------------------------
+# --- Input for model intialisation ---
+# -----------------------------------------------------------
+
+# TODO: Not well implemented yet. ****
+# - Dictionnary of linelists to use for each species in line_opacities
+# The default linelists are defined in the retrieval_utils.linelist_dict
+linelist_names: 
+  # Here is an example of a specific linelist defined by the user.
+  # high:  # line-by-line linelist name
+  #   CO: user_defined_linelist_name_high
+  # low:  # correlated-k linelist name
+  #   CO: user_defined_linelist_name_low
+
+
+
+
+
+
+##### Priors #####
+
+# Here, we define the priors for the parameters.
+# The priors are defined as a list with the following format:
+# [prior_type, prior_arg_1, prior_arg_2, ...]
+# The prior_type is a string that defines the type of prior.
+# It can be one of the default priors found in retrieval_utils.default_prior_func.
+# or a custom prior function (see explanation below).
+# The prior_args are the arguments needed for the prior function.
+
+# NOTE: If you want the parameter value to be converted to 10 ** value,
+#       You can add 'log10' as the last prior_arg.
+
+# The default priors are:
+# - uniform or log_uniform: Uniform prior between prior_arg_1 and prior_arg_2
+# - gaussian: Gaussian prior with mean prior_arg_1 and standard deviation prior_arg_2
+# 
+# NOTE: The difference between uniform and log_uniform is that the values are
+# converted to log scale (exponentiated) when creating the theta_dict.
+# Ex:
+# >>> params_prior['CO'] = ['log_uniform', -12.0, -0.5]
+# will give in the logl function:
+# >>> theta_dict['CO'] = 10 ** theta_dict['CO']
+
+# - Note about Abundances priors -
+# In the current example, we don't use chemical equilibrium, so the priors are set for each molecule.
+# Note that if you want to fit only a subset of the molecules in line_opacities, continuum_opacities and other_species,
+# you need to assign a value to the species that are not fitted in fixed_params.
+
+params_prior:
+  # You don't need to add the species since they can be automatically added
+  # based on the species_in_prior list.
+  # But if you want to manually add the species in the prior, you can add it here.
+  # H2: [log_uniform, -12.0, -0.1]
+  # He: [log_uniform, -12.0, -0.1]
+  # CO: [log_uniform, -12.0, -0.5]
+  H2O: [log_uniform, -12.0, -0.1]
+  CH4: [log_uniform, -12.0, -0.1]
+  # NH3: [log_uniform, -12.0, -0.1]
+  # CO: [log_uniform, -12.0, -0.1]
+  CO2: [log_uniform, -12.0, -0.1]
+  # H2S: [log_uniform, -12.0, -0.5]
+  # C2H2: [log_uniform, -12.0, -0.5]
+  # HCN: [log_uniform, -12.0, -0.5]
+  # N2: [log_uniform, -12.0, -0.1]
+
+  # TP-profile parameters
+  T_eq: [uniform, 50., 600.]  # for iso, guillot and modif
+  # T_int: [uniform, 0., 1000.] # For guillot and modif
+  # tp_gamma: [log_uniform, -4, 6]  # For guillot and modif
+  # kappa_IR: [log_uniform, -4, 4] # For guillot
+
+  # Orbital parameters
+  kp: [uniform, 25, 145]
+  # kp: [gaussian, 83.0, 5.0]
+  rv: [uniform, -10.0, 10.0]
+  # rv: [gaussian, 0, 3.0]
+  
+  # TP-profile parameters
+  # tp_gamma: [log_uniform, -2, 6]  # For guillot and modif
+  # tp_delta: [log_uniform, -8, -3]  # For modif
+  # ptrans: [log_uniform, -12, 3]  # For modif
+  # tp_alpha: [uniform, -5.0, 5.0]  # For modif
+
+  # Other parameters related to the atmosphere
+  # params_prior['p_cloud'] = ['log_uniform', -5.0, 2]
+  # p_cloud: [log_uniform, -8.0, 2.0]
+
+  # Scattering parameters
+  # haze scattering = scat_factor * (sigma_0 * (lambda/lambda_0)) ^ gamma_scat
+  # gamma_scat: [uniform, -15.0, 2.0]
+  # scat_factor: [log_uniform, -10.0, 10.0]
+  
+  # R_pl: [uniform, 0.9, 1.1]
+  # R_pl: [gaussian, 0.98, 0.01]
+  # P0: [log_uniform, -4, 2]
+
+  # If you want to test for partial clouds. Also feel free not to include this (leave it set to 1.0 in fixed parameters above)
+  # cloud_fraction: [uniform, 0, 1]
+
+
+# If the planet is splitted in multiple regions,
+# specify which parameters are specific to each region.
+# Each region is identified with an ID starting at 1 (not 0).
+region_id: [1] 
+
+# List of parameters that are specific to each region (some parameters are shared by all regions)
+# It won't do anything if there is only one region.
+# Put empty list if not used.
+reg_params: []
+
+
+# Dictionary of fixed parameters for each region.
+# It may be useful to fix some parameters in specific regions.
+reg_fixed_params: 
+  # H2O_2: 1e-12  # force water abundance to ~zero in region 2
+
+
+#### Note about theta_dict ####
+
+# Apart from all the parameters in the fixed_params and params_prior dictionnaries,
+# the theta_dict will also contain the following parameters:
+# - pressure: The pressure grid used for the model
+# - temperatures: The temperature grid used for the model, computed based on the TP profile parameters
+# - M_pl: The planet mass in Jupiter mass
+# - R_pl: The planet radius in Jupiter radius
+# - R_star: The star radius in Solar radius
+
+# The custom functions (like the rotation kernel function or custom priors)
+# are expected to receive the full theta_dict as an argument.
+# This way, they can access all the parameters needed for the model.
+
+
+#####################################################
+# --- Custom prior functions ---
+#####################################################
+# The default prior functions are defined in the retrieval_utils module.
+# If you want to add your own prior function, you can put the function in a file
+# which will be imported in the script.
+# The prior function should take `theta_dict`, `param` and `prior_args` as arguments
+# Where `param` is the key of the parameter in `theta_dict`
+# and `prior_args` is a list regrouping all arguments defined
+# in `params_prior`, after the prior type.
+# NOTE: Some prior functions may use other parameters (fitted or not). That's why
+# the function is taking the full `theta_dict` as an argument.
+# Here is an example of the uniform prior function in retrieval_utils:
+# 
+# def uniform_prior(theta_dict, key, prior_inputs):
+#     """Uniform prior"""
+#     x = theta_dict[key]
+#     low, high = prior_inputs
+#     if x < low:
+#         out = -np.inf
+#     elif x > high:
+#         out = -np.inf
+#     else:
+#         out = 0.
+# 
+#     return out
+
+
+#####################################################
+# --- Custom prior initialisation functions ---
+#####################################################
+# Each prior type should have an initialisation function, which is used to
+# initialise the walkers (to start the burnin phase for example).
+# If a custom prior function is defined, it should also have an initialisation function in the same file.
+# The initialisation function should take `prior_inputs` and `n_wlkr` (the number of walker) as arguments.
+# It should return a sample of the prior distribution with the shape (n_wlkr, 1).
+# (The empty dimension is important to combine the samples with the other parameters in the theta_dict.)
+# Here is an example of the uniform prior initialisation function in retrieval_utils:
+#
+# def init_uniform_prior(prior_inputs, n_wlkr):
+#     """Initialize from uniform prior"""
+#     low, high = prior_inputs
+#     sample = np.random.uniform(low, high, size=(n_wlkr, 1))
+
+#     return sample
+#
+# Now, in the file with the custom prior function, you also need 2 dictionaries named
+# prior_init_func and prior_func, that assign a name (a string) to the initialisation
+# function and the prior function.
+# Here is an example of the dictionary for the uniform prior:
+# prior_init_func = {'custom_uniform': init_uniform_prior}
+# prior_func = {'custom_uniform': uniform_prior}
+
+# Put here the full adress to the file containing the custom prior function
+# Set to null if not used
+custom_prior_file: null
+
+# --- Special treatment for the initialisation of some parameters ---
+# Some parameters may need a special treatment for the initialisation from the prior.
+# For instance, I recommend to start initialise the retrieval with a kp value
+# and a rv value close to the expected values, since we have a good idea of what they should be.
+# This will improve the convergence of the retrieval.
+special_init:
+  # H2O: [log_uniform, -3.0, -1.0]
+  # T_eq: [uniform, 300.0, 1000.0]
+  # T_int: [uniform, 0.0, 500.0]
+  kp: [gaussian, 83.0, 5.0]
+  rv: [gaussian, 0, 3.0]
+#   CO: [log_spline, 'CO', 'log10']
+#   H2O: [log_spline, 'H2O', 'log10']
+#   OH: [log_spline, 'OH', 'log10']
+#   Fe: [log_spline, 'Fe', 'log10']
+#   H-: [log_spline, 'H-', 'log10']
+#   e-: [log_spline, 'e-', 'log10']
+
+#   T_eq: [log_spline, 'T_eq']  # For iso, guillot and modif
+
+#   # Orbital parameters
+#   kp: [log_spline, 'kp']  # For RV
+#   rv: [log_spline, 'rv']  # For RV
+
+#   # TP-profile parameters
+#   tp_gamma: [log_spline, 'tp_gamma', 'log10']  # For guillot and modif
+#   tp_delta: [log_spline, 'tp_delta', 'log10']  # For modif
+#   ptrans: [log_spline, 'ptrans', 'log10']  # For modif
+#   tp_alpha: [log_spline, 'tp_alpha']  # For modif
+
+# --- Rotation kernel function ---
+# It is possible to use a custom function to generate the rotation kernel.
+# The function should take as input `theta_regions` and `tr_i`.
+# `theta_regions` is a list of `theta_dict` for each region, where `theta_dict` is a dictionnary
+# with all the parameters needed for the model of region.
+# `tr_i` is the index of the high resolution data sequence.
+# The function should return a list of rotation kernels (a 1D array) at the same sampling
+# and resolution as the data (so uses instrum['resol'] and lbl_res).
+# The function should be named `get_ker`.
+# Here is an example of a function that generates a Citrus rotation kernel:
+#
+# def get_ker(theta_regions, tr_i=0):
+#     all_phases = (data_trs[tr_i]['t_start'] - planet.mid_tr.value) / planet.period.to('d').value % 1
+#     mean_phase = np.mean(all_phases[data_trs[tr_i]['i_pl_signal']])  # Only  where there is planet signal
+#     theta_dict = theta_regions[0]
+#     longitudes = [theta_dict['phase1'], 0.99]
+#     R_pl = theta_dict['R_pl'] * 0.01  # cgs to SI  (cm to m)
+#     angular_freq = 2 * np.pi / planet.period[0].to('s').value
+#     rot_factor = theta_dict['rot_factor']
+#
+#     ker_obj = CitrusRotationKernel(longitudes, R_pl, rot_factor * angular_freq, instrum['resol'])
+#
+#     rot_ker = ker_obj.resample(lbl_res, phase=mean_phase, n_os=1000)
+#
+#     return rot_ker
+#
+# The full or relative path to the file is the input here.
+# If set to null, only the instrumental profile will be used to convolve the model.
+get_ker_file: null
