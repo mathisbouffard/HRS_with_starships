@@ -4,27 +4,27 @@
 
 # PLANET NAME
 # This is used to fetch information in ExoFile, and to save the results
-pl_name: TRAPPIST-1 b
+pl_name: TRAPPIST-1 f
 
 # NAME OF THE INSTRUMENT (used to get the resolution and wavelength range)
 # This should be a list, matching the number of high resolution files
 # If a single element is given, it will be used for all observation files.
-instrum: 
+instrum:
   - nirps_he
 
 # PATH TO THE REDUCED DATA
-high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS/TRAPPIST-1b/'
+high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS/TRAPPIST-1f/'
 
 # DATA FILES
 high_res_file_stem_list:
-  - '2023-09-07/v001/retrieval_input_0-pc_mask_wings97'
-  - '2024-07-05/v001/retrieval_input_0-pc_mask_wings97'
-  - '2024-07-11b/v001/retrieval_input_0-pc_mask_wings97'
+  - '2023-08-28/v001/retrieval_input_1-pc_mask_wings97'
+  - '2024-11-02/v001/retrieval_input_1-pc_mask_wings97'
+  - '2025-08-06/v001/retrieval_input_1-pc_mask_wings97'
 
 mid_tr_list:
-  - 2460194.7007329288  # 2023-09-07
-  - 2460496.8725766301  # 2024-07-05
-  - 2460502.9159761349  # 2024-07-11b
+  - 2460184.827486578   # 2023-08-28
+  - 2460617.5481359637  # 2024-11-02
+  - 2460893.795434583   # 2025-08-06
 
 # ORDERS TO USE
 # (null will use all orders)
@@ -57,23 +57,23 @@ pl_params:
   ###### PLANET ######
   
   M_pl: # Planet mass
-    value: 1.374
+    value: 1.039
     unit: M_earth
   
   R_pl: # Planet radius
-    value: 1.116
+    value: 1.045
     unit: R_earth
 
   Tp: # Planet equilibrium temperature
-    value: 397.6
+    value: 217.7
     unit: K
 
   ap: # Semi-major axis
-    value: 0.01154
+    value: 0.03849
     unit: au
 
   period: # Orbital period
-    value: 130535.3664
+    value: 795531.456
     unit: s
 
   excent: # Eccentricity
@@ -85,7 +85,7 @@ pl_params:
     unit: rad
     
   incl: # Inclination
-    value: 1.56604903123
+    value: 1.56625847074
     unit: rad
  
   RV_sys: # Systemic radial velocity
@@ -93,9 +93,9 @@ pl_params:
     unit: km/s
 
   trandur: # Transit duration
-    value: 2163.6
+    value: 3772.8
     unit: s
-  
+
 # STELLAR SPECTRUM FILE
 # (Set to null if not used)
 # It will be loaded using np.load, so it should be a .npz file, with the following
@@ -113,11 +113,11 @@ star_spectrum: null
 
 # SPECIES THAT CONTRIBUTE TO THE LINE OPACITIES
 # Double check the opacities are available in petitRADTRANS
-line_opacities: [CO2]   # H2O, CH4, CO2
+line_opacities: [H2O, CH4, CO2]  # H2O, CH4, CO2
 
 # SPECIES THAT CONTRIBUTE TO THE CONTINUUM OPACITIES
 # By default, H2-H2 and H2-He CIA are included.
-continuum_opacities: []  # N2-N2
+continuum_opacities: [N2-N2]  # N2-N2
 
 # OTHER SPECIES TO ADD TO THE MODEL
 # (ex: e- and H needed for H- opacity):
@@ -139,7 +139,7 @@ chemical_equilibrium: False
 dissociation: False
 
 # PRESSURE GRID
-limP: [-10, 2]    # pressure range, log10 (bar)
+limP: [-7, 2]    # pressure range, log10 (bar)
 n_pts: 50        # pressure n_points
 
 # DOWNSAMPLING FACTOR FOR HIGH RESOLUTION MODEL
@@ -166,8 +166,7 @@ fixed_params:
   gravity: null
 
   # Reference pressure in bar (for transmission spectra)
-  # this is the pressure at R = R_pl
-  P0: 100.0
+  P0: 1.0
 
   ###### ABUNDANCES ######
   # VMRs (not log abundances)
@@ -178,7 +177,7 @@ fixed_params:
   H2: 1e-99
   He: 1e-99
 
-  # N2: 0.78
+  N2: 0.78
 
   # Abundance ratios for chemical equilibrium
   C/O: null  # solar value is 0.54
@@ -187,7 +186,7 @@ fixed_params:
   ###### TP PROFILE PARAMS ######
   
   # Equilibrium temperature (for all TP profiles)
-  T_eq: 397.6
+  T_eq: 217.7
 
   # # Guillot and Guillot_modif parameters
   # # gamma parameter (for Guillot and Guillot_modif)
@@ -223,7 +222,7 @@ fixed_params:
   ###### ORBITAL PARAMS ######
   
   # Semi amplitude of the planet's radial velocity (in km/s)
-  kp: 83.0803757155627
+  kp: 45.4887919081953
   # Radial velocity of the system (in km/s)
   rv: 0.0
 
@@ -266,15 +265,19 @@ params_prior:
 
   # You don't need to add the species since they can be automatically added based on the species_in_prior list.
   # But if you want to manually add the species in the prior, you can add it here.
-  H2: [log_uniform, -12.0, 0]
-  # H2O: [log_uniform, -12.0, 0]
-  # CH4: [log_uniform, -12.0, 0]
-  CO2: [log_uniform, -12.0, 0]
+  # H2: [log_uniform, -12.0, -0.1]
+  # He: [log_uniform, -12.0, -0.1]
+  # CO: [log_uniform, -12.0, -0.5]
+  H2O: [log_uniform, -12.0, -0.1]
+  # H2O: [log_uniform, -12.0, -0.001]
+  CH4: [log_uniform, -12.0, -0.1]
+  # CH4: [log_uniform, -12.0, -0.001]
+  CO2: [log_uniform, -12.0, -0.1]
   # N2: [log_uniform, -12.0, -0.1]
 
   ###### TP PROFILE PARAMS ######
   
-  # T_eq: [uniform, 50., 800.]  # for iso, guillot and modif
+  T_eq: [uniform, 50., 450.]  # for iso, guillot and modif
   # T_int: [uniform, 0., 1000.]  # for guillot and modif
   # tp_gamma: [log_uniform, -4, 6]  # for guillot and modif
   # kappa_IR: [log_uniform, -4, 4]  # for guillot
@@ -304,7 +307,7 @@ params_prior:
 # -----------------------------------------------------------
 
 # NAME OF THE RUN
-run_name: 'H2atm_CO2_3n'
+run_name: 'N2atm_3nights'
 
 ###### BURNIN OR SAMPLING ######
 
@@ -324,15 +327,14 @@ n_steps_sampling: 2500
 # SAMPLING: WALKER FILE USED TO INITIALIZE WALKERS
 # If null, the retrieval will use random initialisation from the prior
 # walker_file_in: null
-walker_file_in: 'walker_steps_H2atm_CO2_3n_combined.h5'
+walker_file_in: 'walker_steps_N2atm_3nights_combined.h5'
 
 # SAMPLING: HOW TO INITIALIZE WALKERS
 # Options: "from_burnin", "continue" (not used if walker_file_in is null)
 # If "from_burnin", the walkers will be initialised from the last step of the burnin chain in walker_file_in
 # If "continue", the walkers will be initialised from the last step of the chain in walker_file_in.
-#    Note that this option allows to keep the walker_file_in as the output file, and append the new walkers to it
-#    (only if walker_file_in == walker_file_out)
-init_mode: 'from_burnin'
+#    Note that this option allows to keep the walker_file_in as the output file, and append the new walkers to it.
+init_mode: "from_burnin"
 
 ###### COMPUTING RESOURCES ######
 
@@ -343,22 +345,21 @@ n_cpu: null
 
 # NUMBER OF WALKERS
 # If null, the number of walkers will be set to n_wlkr_per_cpu * n_cpu
-# (we recommend to set it to null and using n_wlkr_per_cpu instead)
+# (null is recommended, use n_wlkr_per_cpu instead)
 n_walkers: null
 
 # NUMBER OF WALKERS PER CPU
-# Increase if CPU usage is too high
 n_walkers_per_cpu: 8
 
 ###### FILE PATHS ######
 
 # Path to the main directory where outputs are saved
-# If null, use scratch (if available) or home otherwise
-base_dir: null
+# If None, use scratch (if available) or home otherwise
+base_dir: None
 
 # Path where the walker steps will be saved
 # If null, the path will be set to <base_dir>/DataAnalysis/walker_steps/<pl_name>
-walker_path: '/home/mathisb/scratch/HRS_retrievals/walker_steps/TRAPPIST-1b/'
+walker_path: '/home/mathisb/scratch/HRS_retrievals/walker_steps/TRAPPIST-1f/'
 
 # Name of the file where the walker steps will be saved
 # If null, the file will be named walker_steps_<run_name>.h5
@@ -366,7 +367,7 @@ walker_file_out: null
 
 # Path where this yaml file will be copied
 # If null, the path will be set to base_dir/DataAnalysis/retrieval_params/<pl_name>
-params_path: '/home/mathisb/scratch/HRS_retrievals/retrieval_params/TRAPPIST-1b/'
+params_path: '/home/mathisb/scratch/HRS_retrievals/retrieval_params/TRAPPIST-1f/'
 
 # Name of the file where this yaml file will be copied
 # If null, the file will be named params_<run_name>.yaml
