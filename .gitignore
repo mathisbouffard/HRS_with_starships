@@ -3,12 +3,17 @@ old/
 unused/
 
 
-# Data files specific to Starships
-Exofiles/
-HRS_correlations/
-HRS_models/
-HRS_reductions/
-HRS_data/
+# Files and folders specific to Starships
+/Exofiles/
+/HRS_correlations/
+/HRS_models/
+/HRS_reductions/
+/HRS_data/
+/starships/
+
+# Extensions specific to Starships
+.h5
+.txt
 
 
 # Byte-compiled / optimized / DLL files
