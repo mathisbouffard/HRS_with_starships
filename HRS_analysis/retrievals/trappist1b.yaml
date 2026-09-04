@@ -13,7 +13,7 @@ instrum:
   - nirps_he
 
 # PATH TO THE REDUCED DATA
-high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS/TRAPPIST-1b/'
+high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS_Apr2026/TRAPPIST-1b/'
 
 # DATA FILES
 high_res_file_stem_list:

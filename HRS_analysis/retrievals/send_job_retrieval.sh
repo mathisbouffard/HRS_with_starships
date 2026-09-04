@@ -34,7 +34,7 @@ fi
 sbatch_args=(
     "--account=def-rdoyon"
     "--nodes=1"
-    "--cpus-per-task=25"  # increase if job takes too long
+    "--cpus-per-task=20"  # increase if job takes too long
     "--mem=50G"           # increase if memory usage is too high
     "--job-name=T1_retrieval"
     "--mail-user=mathis.bouffard@umontreal.ca"
@@ -53,7 +53,7 @@ if [ $1 == "burnin" ]; then
     sbatch_args+=("--output=/home/mathisb/scratch/HRS_retrievals/sbatch_outputs/out_sbatch_%A_%a.txt")
 elif [ $1 == "sampling" ]; then
     echo "Running in 'sampling' mode."
-    sbatch_args+=("--time=1-20:00")  # 3-20:00 for 3 nights
+    sbatch_args+=("--time=1-10:00")  # 3-20:00 for 3 nights
     sbatch_args+=("--output=/home/mathisb/scratch/HRS_retrievals/sbatch_outputs/out_sbatch_%j.txt")
 else
     echo "First argument must be either 'burnin' or 'sampling'"

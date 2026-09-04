@@ -17,9 +17,9 @@ high_res_path: '/home/mathisb/scratch/HRS_reductions/NIRPS_Apr2026/TRAPPIST-1f/'
 
 # DATA FILES
 high_res_file_stem_list:
-  - '2023-08-28/v001/retrieval_input_1-pc_mask_wings97'
-  - '2024-11-02/v001/retrieval_input_1-pc_mask_wings97'
-  - '2025-08-06/v001/retrieval_input_1-pc_mask_wings97'
+  - '2023-08-28/v001/retrieval_input_0-pc_mask_wings97'
+  - '2024-11-02/v001/retrieval_input_0-pc_mask_wings97'
+  - '2025-08-06/v001/retrieval_input_0-pc_mask_wings97'
 
 mid_tr_list:
   - 2460184.827486578   # 2023-08-28
@@ -113,7 +113,7 @@ star_spectrum: null
 
 # SPECIES THAT CONTRIBUTE TO THE LINE OPACITIES
 # Double check the opacities are available in petitRADTRANS
-line_opacities: [H2O, CH4, CO2]  # H2O, CH4, CO2
+line_opacities: [H2O]  # H2O, CH4, CO2
 
 # SPECIES THAT CONTRIBUTE TO THE CONTINUUM OPACITIES
 # By default, H2-H2 and H2-He CIA are included.
@@ -139,7 +139,7 @@ chemical_equilibrium: False
 dissociation: False
 
 # PRESSURE GRID
-limP: [-7, 2]    # pressure range, log10 (bar)
+limP: [-10, 2]    # pressure range, log10 (bar)
 n_pts: 50        # pressure n_points
 
 # DOWNSAMPLING FACTOR FOR HIGH RESOLUTION MODEL
@@ -166,7 +166,8 @@ fixed_params:
   gravity: null
 
   # Reference pressure in bar (for transmission spectra)
-  P0: 1.0
+  # this is the pressure at R = R_pl
+  P0: 100.0
 
   ###### ABUNDANCES ######
   # VMRs (not log abundances)
@@ -174,10 +175,10 @@ fixed_params:
   e-: 1e-99  # electrons
   H: 1e-99
 
-  H2: 1e-99
-  He: 1e-99
+  # H2: 1e-99
+  # He: 1e-99
 
-  N2: 0.78
+  # N2: 0.78
 
   # Abundance ratios for chemical equilibrium
   C/O: null  # solar value is 0.54
@@ -265,19 +266,16 @@ params_prior:
 
   # You don't need to add the species since they can be automatically added based on the species_in_prior list.
   # But if you want to manually add the species in the prior, you can add it here.
-  # H2: [log_uniform, -12.0, -0.1]
-  # He: [log_uniform, -12.0, -0.1]
-  # CO: [log_uniform, -12.0, -0.5]
-  H2O: [log_uniform, -12.0, -0.1]
-  # H2O: [log_uniform, -12.0, -0.001]
-  CH4: [log_uniform, -12.0, -0.1]
-  # CH4: [log_uniform, -12.0, -0.001]
-  CO2: [log_uniform, -12.0, -0.1]
-  # N2: [log_uniform, -12.0, -0.1]
+  # H2: [log_uniform, -12.0, 0]
+  N2: [uniform, 0., 1.]
+  # H2O: [log_uniform, -12.0, 0]
+  H2O: [uniform, 0., 1.]
+  # CH4: [log_uniform, -12.0, 0]
+  # CO2: [log_uniform, -12.0, 0]
 
   ###### TP PROFILE PARAMS ######
   
-  T_eq: [uniform, 50., 450.]  # for iso, guillot and modif
+  # T_eq: [uniform, 50., 450.]  # for iso, guillot and modif
   # T_int: [uniform, 0., 1000.]  # for guillot and modif
   # tp_gamma: [log_uniform, -4, 6]  # for guillot and modif
   # kappa_IR: [log_uniform, -4, 4]  # for guillot
@@ -307,7 +305,7 @@ params_prior:
 # -----------------------------------------------------------
 
 # NAME OF THE RUN
-run_name: 'N2atm_3nights'
+run_name: 'N2_H2O_bothlinear'
 
 ###### BURNIN OR SAMPLING ######
 
@@ -319,15 +317,15 @@ run_name: 'N2atm_3nights'
 slurm_array_behaviour: null
 
 # How many steps for burnin phase
-n_steps_burnin: 500
+n_steps_burnin: 300
 
 # How many steps for sampling phase
-n_steps_sampling: 2500
+n_steps_sampling: 300
 
 # SAMPLING: WALKER FILE USED TO INITIALIZE WALKERS
 # If null, the retrieval will use random initialisation from the prior
-# walker_file_in: null
-walker_file_in: 'walker_steps_N2atm_3nights_combined.h5'
+walker_file_in: null
+# walker_file_in: 'walker_steps_N2atm_3nights_combined.h5'
 
 # SAMPLING: HOW TO INITIALIZE WALKERS
 # Options: "from_burnin", "continue" (not used if walker_file_in is null)

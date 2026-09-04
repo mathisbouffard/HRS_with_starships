@@ -320,7 +320,7 @@ n_steps_sampling: 2500
 # SAMPLING: WALKER FILE USED TO INITIALIZE WALKERS
 # If null, the retrieval will use random initialisation from the prior
 # walker_file_in: null
-walker_file_in: 'walker_steps_INJ_H2_CH4_combined.h5'
+walker_file_in: 'walker_steps_INJ_H2_CH4_secondtry.h5'
 
 # SAMPLING: HOW TO INITIALIZE WALKERS
 # Options: "from_burnin", "continue" (not used if walker_file_in is null)
@@ -328,7 +328,7 @@ walker_file_in: 'walker_steps_INJ_H2_CH4_combined.h5'
 # If "continue", the walkers will be initialised from the last step of the chain in walker_file_in.
 #    Note that this option allows to keep the walker_file_in as the output file, and append the new walkers to it
 #    (only if walker_file_in == walker_file_out)
-init_mode: 'from_burnin'
+init_mode: 'continue'
 
 ###### COMPUTING RESOURCES ######
 
